@@ -69,7 +69,7 @@ Dr. Fu Zhang < fuzhang@hku.hk >.
 #include <tf/transform_broadcaster.h>
 #include <fast_lio/States.h>
 #include <geometry_msgs/Vector3.h>
-#include <livox_ros_driver/CustomMsg.h>
+#include <livox_ros_driver2/CustomMsg.h>
 #include "preprocess.h"
 
 #ifdef USE_ikdforest
@@ -405,7 +405,7 @@ void standard_pcl_cbk(const sensor_msgs::PointCloud2::ConstPtr &msg)
     fout_dbg << "last_timestamp_lidar: " << std::to_string(last_timestamp_lidar) << std::endl << std::endl;
 }
 
-void livox_pcl_cbk(const livox_ros_driver::CustomMsg::ConstPtr &msg)
+void livox_pcl_cbk(const livox_ros_driver2::CustomMsg::ConstPtr &msg)
 {
     mtx_buffer.lock();
     scan_count ++;
