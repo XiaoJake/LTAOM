@@ -225,7 +225,7 @@ void KD_FOREST::multi_thread_rebuild(){
                 Rebuild_Logger.clear();
             }
             int cube_index = get_cube_index((*Rebuild_Ptr)->point);
-            max_rebuild_num = max(max_rebuild_num, (*Rebuild_Ptr)->TreeSize);
+            max_rebuild_num = std::max(max_rebuild_num, (*Rebuild_Ptr)->TreeSize);
             if ((*Rebuild_Ptr)->is_root_node) {
                 Treesize_tmp[cube_index] = roots[cube_index]->TreeSize;
                 Validnum_tmp[cube_index] = roots[cube_index]->TreeSize - roots[cube_index]->invalid_point_num;
@@ -330,9 +330,9 @@ void KD_FOREST::Build(PointVector point_cloud, bool need_downsample, double time
             min_value.x = min(point_cloud[i].x,min_value.x);
             min_value.y = min(point_cloud[i].y,min_value.y);
             min_value.z = min(point_cloud[i].z,min_value.z);
-            max_value.x = max(point_cloud[i].x,max_value.x);
-            max_value.y = max(point_cloud[i].y,max_value.y);
-            max_value.z = max(point_cloud[i].z,max_value.z);       
+            max_value.x = std::max(point_cloud[i].x,max_value.x);
+            max_value.y = std::max(point_cloud[i].y,max_value.y);
+            max_value.z = std::max(point_cloud[i].z,max_value.z);       
         }
         PointType min_center, max_center;
         min_center = get_box_center(min_value);
@@ -600,7 +600,7 @@ void KD_FOREST::BuildTree(KD_TREE_NODE ** root, int l, int r, vector<PointCubeIn
 void KD_FOREST::Rebuild(KD_TREE_NODE ** root){    
     KD_TREE_NODE * father_ptr;
     if ((*root)->TreeSize >= Multi_Thread_Rebuild_Point_Num) { 
-        max_need_rebuild_num = max((*root)->TreeSize,max_need_rebuild_num);
+        max_need_rebuild_num = std::max((*root)->TreeSize,max_need_rebuild_num);
         if (!pthread_mutex_trylock(&rebuild_ptr_mutex_lock)){     
             if (Rebuild_Ptr== nullptr || ((*root)->TreeSize > (*Rebuild_Ptr)->TreeSize)) {
                 Rebuild_Ptr = root;
@@ -701,7 +701,7 @@ void KD_FOREST::Add_by_point(KD_TREE_NODE ** root, PointCubeIndexType PointCente
             Update(*root);
         }
         if ((*root)->update_counter <= Max_Update_Time) (*root)->update_counter ++;
-        max_counter = max((*root)->update_counter, max_counter);
+        max_counter = std::max((*root)->update_counter, max_counter);
         (*root)->timestamp = PointCenter.time;
         return;
     }
@@ -963,34 +963,34 @@ void KD_FOREST::Update(KD_TREE_NODE * root){
         root->invalid_point_num = left_son_ptr->invalid_point_num + right_son_ptr->invalid_point_num + (root->point_deleted? 1:0);
         root->tree_deleted = left_son_ptr->tree_deleted && right_son_ptr->tree_deleted && root->point_deleted;
         root->node_range_x[0] = min(min(left_son_ptr->node_range_x[0],right_son_ptr->node_range_x[0]),root->point.x);
-        root->node_range_x[1] = max(max(left_son_ptr->node_range_x[1],right_son_ptr->node_range_x[1]),root->point.x);
+        root->node_range_x[1] = std::max(std::max(left_son_ptr->node_range_x[1],right_son_ptr->node_range_x[1]),root->point.x);
         root->node_range_y[0] = min(min(left_son_ptr->node_range_y[0],right_son_ptr->node_range_y[0]),root->point.y);
-        root->node_range_y[1] = max(max(left_son_ptr->node_range_y[1],right_son_ptr->node_range_y[1]),root->point.y);        
+        root->node_range_y[1] = std::max(std::max(left_son_ptr->node_range_y[1],right_son_ptr->node_range_y[1]),root->point.y);        
         root->node_range_z[0] = min(min(left_son_ptr->node_range_z[0],right_son_ptr->node_range_z[0]),root->point.z);
-        root->node_range_z[1] = max(max(left_son_ptr->node_range_z[1],right_son_ptr->node_range_z[1]),root->point.z);         
-        root->max_time = max(max(left_son_ptr->max_time,right_son_ptr->max_time),root->timestamp);
+        root->node_range_z[1] = std::max(std::max(left_son_ptr->node_range_z[1],right_son_ptr->node_range_z[1]),root->point.z);         
+        root->max_time = std::max(std::max(left_son_ptr->max_time,right_son_ptr->max_time),root->timestamp);
     } else if (left_son_ptr != nullptr){
         root->TreeSize = left_son_ptr->TreeSize + 1;
         root->invalid_point_num = left_son_ptr->invalid_point_num + (root->point_deleted?1:0);
         root->tree_deleted = left_son_ptr->tree_deleted && root->point_deleted;
         root->node_range_x[0] = min(left_son_ptr->node_range_x[0],root->point.x);
-        root->node_range_x[1] = max(left_son_ptr->node_range_x[1],root->point.x);
+        root->node_range_x[1] = std::max(left_son_ptr->node_range_x[1],root->point.x);
         root->node_range_y[0] = min(left_son_ptr->node_range_y[0],root->point.y);
-        root->node_range_y[1] = max(left_son_ptr->node_range_y[1],root->point.y); 
+        root->node_range_y[1] = std::max(left_son_ptr->node_range_y[1],root->point.y); 
         root->node_range_z[0] = min(left_son_ptr->node_range_z[0],root->point.z);
-        root->node_range_z[1] = max(left_son_ptr->node_range_z[1],root->point.z); 
-        root->max_time = max(left_son_ptr->max_time,root->timestamp);              
+        root->node_range_z[1] = std::max(left_son_ptr->node_range_z[1],root->point.z); 
+        root->max_time = std::max(left_son_ptr->max_time,root->timestamp);              
     } else if (right_son_ptr != nullptr){
         root->TreeSize = right_son_ptr->TreeSize + 1;
         root->invalid_point_num = right_son_ptr->invalid_point_num + (root->point_deleted? 1:0);
         root->tree_deleted = right_son_ptr->tree_deleted && root->point_deleted;        
         root->node_range_x[0] = min(right_son_ptr->node_range_x[0],root->point.x);
-        root->node_range_x[1] = max(right_son_ptr->node_range_x[1],root->point.x);
+        root->node_range_x[1] = std::max(right_son_ptr->node_range_x[1],root->point.x);
         root->node_range_y[0] = min(right_son_ptr->node_range_y[0],root->point.y);
-        root->node_range_y[1] = max(right_son_ptr->node_range_y[1],root->point.y); 
+        root->node_range_y[1] = std::max(right_son_ptr->node_range_y[1],root->point.y); 
         root->node_range_z[0] = min(right_son_ptr->node_range_z[0],root->point.z);
-        root->node_range_z[1] = max(right_son_ptr->node_range_z[1],root->point.z);
-        root->max_time = max(right_son_ptr->max_time,root->timestamp);
+        root->node_range_z[1] = std::max(right_son_ptr->node_range_z[1],root->point.z);
+        root->max_time = std::max(right_son_ptr->max_time,root->timestamp);
     } else {
         root->TreeSize = 1;
         root->invalid_point_num = (root->point_deleted? 1:0);

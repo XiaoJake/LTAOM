@@ -85,7 +85,7 @@ Dr. Fu Zhang < fuzhang@hku.hk >.
 #include <unistd.h>
 
 #define PI 3.14159265
-
+using namespace std;
 //#define as_node
 #ifdef as_node
 #include "loop_optimization_node.h"
@@ -238,7 +238,7 @@ void notificationCallback(const std_msgs::Float64MultiArray::ConstPtr &msg)
             gtsam::Point3(msg->data[4], msg->data[5], msg->data[6]));
         subpose_afterjump = gtsam::Pose3(gtsam::Rot3::RzRyRx(msg->data[7], msg->data[8], msg->data[9]), \
             gtsam::Point3(msg->data[10], msg->data[11], msg->data[12]));
-        opt_debug_file << "*subpose_afterjump: " << subpose_afterjump.translation()  <<endl;
+        opt_debug_file << "*subpose_afterjump: " << subpose_afterjump.translation()  << std::endl;
     }
     fastlio_notify_type = int(msg->data[0]);
 }
@@ -606,7 +606,7 @@ void correctPosesAndSaveTxt()
     if (last_kfsize==keyframes_.size()) return;
     last_kfsize = keyframes_.size();
     auto start1 = std::chrono::system_clock::now();
-    poses_opt_file.open(poses_opt_fname, ios::out | ios::trunc);
+    poses_opt_file.open(poses_opt_fname, std::ios::out | std::ios::trunc);
     auto end1 = std::chrono::system_clock::now();
     auto elapsed_ms = (std::chrono::duration<double,std::milli>(end1 - start1)).count();
     for (int i = 0; i < keyframes_.size(); i++)
@@ -819,8 +819,8 @@ void optimize()
     if (gts_init_vals_.empty() || gts_graph_.empty())
         return;
 
-    std::cout      << "[Optimize]: running isam2 optimization ..." << endl;
-    opt_debug_file << "[Optimize]: running isam2 optimization ..." << endl;
+    std::cout      << "[Optimize]: running isam2 optimization ..." <<std::endl;
+    opt_debug_file << "[Optimize]: running isam2 optimization ..." <<std::endl;
     auto start1 = std::chrono::system_clock::now();
 //    printGraph(gts_graph_);
     isam_->backup();         // self-defined isam function, you need to compile gtsam with provided note in Readme
@@ -1555,7 +1555,7 @@ void pubAndSaveGloablMap(bool savemap = true)
         auto Rt = GTSPoseToEigenM4f(_2T1_);
         Eigen::Matrix3f R = Rt.block<3,3>(0,0);
         Eigen::Vector3f t = Eigen::Vector3f(Rt(0,3), Rt(1,3), Rt(2,3));
-        int pt_skip = max(1, int(pcdsave_step));
+        int pt_skip = std::max(1, int(pcdsave_step));
         for (size_t pidx = 0; pidx < keyframes[node_idx].KeyCloud->points.size(); pidx += pt_skip)
         {
             auto a_pt = keyframes_[node_idx].KeyCloud->points[pidx];
@@ -1657,12 +1657,12 @@ void savePrior()                                     // Multisession mode functi
         a_pt.x = akeyframe.KeyPoseOpt.roll; a_pt.y = akeyframe.KeyPoseOpt.pitch; a_pt.z = akeyframe.KeyPoseOpt.yaw;
         fullCorrected_p->push_back(a_pt);
         a_pt.x = akeyframe.KeyPoseOpt.x; a_pt.y = akeyframe.KeyPoseOpt.y; a_pt.z = akeyframe.KeyPoseOpt.z;
-        opt_debug_file << "KF pose corrected: " << a_pt.x << " " << a_pt.y << " " << a_pt.z << endl;
+        opt_debug_file << "KF pose corrected: " << a_pt.x << " " << a_pt.y << " " << a_pt.z <<std::endl;
         fullCorrected_p->push_back(a_pt);
         a_pt.x = akeyframe.KeyPose.roll; a_pt.y = akeyframe.KeyPose.pitch; a_pt.z = akeyframe.KeyPose.yaw;
         fullCorrected_p->push_back(a_pt);
         a_pt.x = akeyframe.KeyPose.x; a_pt.y = akeyframe.KeyPose.y; a_pt.z = akeyframe.KeyPose.z;
-        opt_debug_file << "KF pose original: " << a_pt.x << " " << a_pt.y << " " << a_pt.z << endl;
+        opt_debug_file << "KF pose original: " << a_pt.x << " " << a_pt.y << " " << a_pt.z <<std::endl;
 
         fullCorrected_p->push_back(a_pt);
         std::cout      << "[SavePrior]: prepare key frame: "  << i << std::endl;
@@ -1725,7 +1725,7 @@ int main(int argc, char **argv)
     poses_raw_file = std::fstream(poses_raw_fname, std::fstream::out);
 
 //    times_file = std::fstream(save_directory + "timestamps.txt", std::fstream::out);
-//    poses_opt_all_file.open(save_directory + "optimized_poses_full.txt", ios::out | ios::trunc);
+//    poses_opt_all_file.open(save_directory + "optimized_poses_full.txt", std::ios::out | std::ios::trunc);
 
     times_opt_file = std::fstream(save_directory + "times_optimization_LTAOM.txt", std::fstream::out);
     times_opt_file.precision(std::numeric_limits<double>::max_digits10);

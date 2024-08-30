@@ -78,7 +78,7 @@ void Preprocess::avia_handler(const livox_ros_driver::CustomMsg::ConstPtr &msg)
   pl_full.clear();
   double t1 = omp_get_wtime();
   int plsize = msg->point_num;
-  // cout<<"plsie: "<<plsize<<endl;
+  // cout<<"plsie: "<<plsize<< std::endl;
 
   pl_corn.reserve(plsize);
   pl_surf.reserve(plsize);
@@ -158,7 +158,7 @@ void Preprocess::avia_handler(const livox_ros_driver::CustomMsg::ConstPtr &msg)
           pl_full[i].curvature = msg->points[i].offset_time / float(1000000); //use curvature as time of each laser points
 
           //if(pl_full[i].curvature/1000 > 1.0/30.0f + 0.01){ //mid360 bug
-          //    cout << "offset time: " << pl_full[i].curvature/1000 << endl;
+          //    cout << "offset time: " << pl_full[i].curvature/1000 <<std::endl;
           //    continue;
           //}
           if((abs(pl_full[i].x - pl_full[i-1].x) > 1e-7) 
@@ -271,7 +271,7 @@ void Preprocess::ouster_handler(const sensor_msgs::PointCloud2::ConstPtr &msg)
   else
   {
     double time_stamp = msg->header.stamp.toSec();
-    // cout << "===================================" << endl;
+    // cout << "===================================" <<std::endl;
     // printf("Pt size = %d, N_SCANS = %d\r\n", plsize, N_SCANS);
 //    double scan_ts_max = -100000;
 //    double scan_ts_min = 100000;
@@ -466,7 +466,7 @@ void Preprocess::velodyne_handler(const sensor_msgs::PointCloud2::ConstPtr &msg)
       for (int i = 0; i < plsize; i++)
       {
         PointType added_pt;
-        // cout<<"!!!!!!"<<i<<" "<<plsize<<endl;
+        // cout<<"!!!!!!"<<i<<" "<<plsize<< std::endl;
         
         added_pt.normal_x = 0;
         added_pt.normal_y = 0;

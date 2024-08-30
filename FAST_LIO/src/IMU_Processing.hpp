@@ -191,7 +191,7 @@ void ImuProcess::IMU_init(const MeasureGroup &meas, esekfom::esekf<state_ikfom, 
     mean_acc << imu_acc.x, imu_acc.y, imu_acc.z;
     mean_gyr << gyr_acc.x, gyr_acc.y, gyr_acc.z;
     first_lidar_time = meas.lidar_beg_time;
-     cout<<"init acc norm: "<<mean_acc.norm()<<endl;
+     cout<<"init acc norm: "<<mean_acc.norm()<< std::endl;
   }
 
   for (const auto &imu : meas.imu)
@@ -207,7 +207,7 @@ void ImuProcess::IMU_init(const MeasureGroup &meas, esekfom::esekf<state_ikfom, 
     cov_acc = cov_acc * (N - 1.0) / N + (cur_acc - mean_acc).cwiseProduct(cur_acc - mean_acc) * (N - 1.0) / (N * N);
     cov_gyr = cov_gyr * (N - 1.0) / N + (cur_gyr - mean_gyr).cwiseProduct(cur_gyr - mean_gyr) * (N - 1.0) / (N * N);
 
-    // cout<<"acc norm: "<<cur_acc.norm()<<" "<<mean_acc.norm()<<endl;
+    // cout<<"acc norm: "<<cur_acc.norm()<<" "<<mean_acc.norm()<< std::endl;
 
     N ++;
   }
@@ -248,7 +248,7 @@ void ImuProcess::IMU_init(const MeasureGroup &meas, StatesGroup &state_inout, in
     mean_acc << imu_acc.x, imu_acc.y, imu_acc.z;
     mean_gyr << gyr_acc.x, gyr_acc.y, gyr_acc.z;
     first_lidar_time = meas.lidar_beg_time;
-    // cout<<"init acc norm: "<<mean_acc.norm()<<endl;
+    // cout<<"init acc norm: "<<mean_acc.norm()<< std::endl;
   }
 
   for (const auto &imu : meas.imu)
@@ -264,7 +264,7 @@ void ImuProcess::IMU_init(const MeasureGroup &meas, StatesGroup &state_inout, in
     cov_acc = cov_acc * (N - 1.0) / N + (cur_acc - mean_acc).cwiseProduct(cur_acc - mean_acc) * (N - 1.0) / (N * N);
     cov_gyr = cov_gyr * (N - 1.0) / N + (cur_gyr - mean_gyr).cwiseProduct(cur_gyr - mean_gyr) * (N - 1.0) / (N * N);
 
-    // cout<<"acc norm: "<<cur_acc.norm()<<" "<<mean_acc.norm()<<endl;
+    // cout<<"acc norm: "<<cur_acc.norm()<<" "<<mean_acc.norm()<< std::endl;
 
     N ++;
   }
@@ -294,7 +294,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, esekfom::esekf<state_ikf
   double back_point_time = disable_undistort?0.1:pcl_out.points.back().curvature / double(1000);
   const double &pcl_end_time = pcl_beg_time + back_point_time;//pcl_out.points.back().curvature / double(1000);
   // cout<<"[ IMU Process ]: Process lidar from "<<std::to_string(pcl_beg_time)<<" to "<<std::to_string(pcl_end_time)<<", " \
-  //          <<meas.imu.size()<<" imu msgs from "<<std::to_string(imu_beg_time)<<" to "<<std::to_string(imu_end_time)<<endl;
+  //          <<meas.imu.size()<<" imu msgs from "<<std::to_string(imu_beg_time)<<" to "<<std::to_string(imu_end_time)<< std::endl;
 
   /*** Initialize IMU pose ***/
   state_ikfom imu_state = kf_state.get_x();
@@ -305,7 +305,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, esekfom::esekf<state_ikf
   V3D angvel_avr, acc_avr, acc_imu, vel_imu, pos_imu;
   M3D R_imu;
   double dt = 0;
-  //  cout<<"[ IMU Process ]: R_imu"<<imu_state.rot.toRotationMatrix()<<endl;
+  //  cout<<"[ IMU Process ]: R_imu"<<imu_state.rot.toRotationMatrix()<< std::endl;
   //  std::cout << "bef propogate glio cov = " << std::endl << kf_state.get_P().diagonal().transpose() << std::endl;
 
   input_ikfom in;
@@ -324,7 +324,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, esekfom::esekf<state_ikf
                 0.5 * (head->linear_acceleration.z + tail->linear_acceleration.z);
 
     // #ifdef DEBUG_PRINT
-    fout_imu << setw(10) << head->header.stamp.toSec() - first_lidar_time << " " << angvel_avr.transpose() << " " << acc_avr.transpose() << endl;
+    fout_imu << setw(10) << head->header.stamp.toSec() - first_lidar_time << " " << angvel_avr.transpose() << " " << acc_avr.transpose() <<std::endl;
     // #endif 
 
     angvel_avr -= imu_state.bg;
@@ -342,7 +342,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, esekfom::esekf<state_ikf
       dt = tail->header.stamp.toSec() - head->header.stamp.toSec();
     }
 
-    //   cout<<"[ IMU Process ]: imu_state.bg"<<imu_state.bg.transpose()<<", imu_state.ba "<<imu_state.ba.transpose()<<", dt" <<dt<<endl;
+    //   cout<<"[ IMU Process ]: imu_state.bg"<<imu_state.bg.transpose()<<", imu_state.ba "<<imu_state.ba.transpose()<<", dt" <<dt<< std::endl;
     in.acc = acc_avr;
     in.gyro = angvel_avr;
     Q.block<3, 3>(0, 0).diagonal() = cov_gyr;
@@ -387,8 +387,8 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, esekfom::esekf<state_ikf
   //            << imu_state.ba.transpose() << " bg " << imu_state.bg.transpose() << " gravity " << V3D(imu_state.grav[0], imu_state.grav[1], imu_state.grav[2]).transpose() << std::endl;
   #ifdef DEBUG_PRINT
   esekfom::esekf<state_ikfom, 12, input_ikfom>::cov P = kf_state.get_P();
-    cout<<"[ IMU Process ]: vel "<<imu_state.vel.transpose()<<" pos "<<imu_state.pos.transpose()<<" ba"<<imu_state.ba.transpose()<<" bg "<<imu_state.bg.transpose()<<endl;
-    cout<<"propagated cov: "<<P.diagonal().transpose()<<endl;
+    cout<<"[ IMU Process ]: vel "<<imu_state.vel.transpose()<<" pos "<<imu_state.pos.transpose()<<" ba"<<imu_state.ba.transpose()<<" bg "<<imu_state.bg.transpose()<< std::endl;
+    cout<<"propagated cov: "<<P.diagonal().transpose()<< std::endl;
   #endif
 
   if (disable_undistort)  return;
@@ -403,7 +403,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, esekfom::esekf<state_ikf
     pos_imu<<VEC_FROM_ARRAY(head->pos);
     acc_imu<<VEC_FROM_ARRAY(tail->acc);
     angvel_avr<<VEC_FROM_ARRAY(tail->gyr);
-    //cout<<"head imu acc: "<<acc_imu.transpose()<<endl;
+    //cout<<"head imu acc: "<<acc_imu.transpose()<< std::endl;
 
     for(; it_pcl->curvature / double(1000) > head->offset_time; it_pcl --)
     {
@@ -445,7 +445,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, StatesGroup &state_inout
   sort(pcl_out.points.begin(), pcl_out.points.end(), time_list);
   const double &pcl_end_time = pcl_beg_time + pcl_out.points.back().curvature / double(1000);
   // cout<<"[ IMU Process ]: Process lidar from "<<pcl_beg_time-first_lidar_time<<" to "<<pcl_end_time-first_lidar_time<<", " \
-  //          <<meas.imu.size()<<" imu msgs from "<<imu_beg_time-first_lidar_time<<" to "<<imu_end_time-first_lidar_time<<endl;
+  //          <<meas.imu.size()<<" imu msgs from "<<imu_beg_time-first_lidar_time<<" to "<<imu_end_time-first_lidar_time<< std::endl;
 
   /*** Initialize IMU pose ***/
   IMUpose.clear();
@@ -463,7 +463,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, StatesGroup &state_inout
     auto &&head = *(it_imu);
     auto &&tail = *(it_imu + 1);
     
-    // cout<<"imu_z meas: "<<tail->angular_velocity.z<<endl;
+    // cout<<"imu_z meas: "<<tail->angular_velocity.z<< std::endl;
     
     if (tail->header.stamp.toSec() < last_lidar_end_time_)    continue;
     
@@ -471,14 +471,14 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, StatesGroup &state_inout
                 0.5 * (head->angular_velocity.y + tail->angular_velocity.y),
                 0.5 * (head->angular_velocity.z + tail->angular_velocity.z);
 
-    // cout<<"imu_z: "<<angvel_avr[2]<<endl;
+    // cout<<"imu_z: "<<angvel_avr[2]<< std::endl;
 
     acc_avr   <<0.5 * (head->linear_acceleration.x + tail->linear_acceleration.x),
                 0.5 * (head->linear_acceleration.y + tail->linear_acceleration.y),
                 0.5 * (head->linear_acceleration.z + tail->linear_acceleration.z);
 
     // #ifdef DEBUG_PRINT
-      fout_imu << setw(10) << head->header.stamp.toSec() - first_lidar_time << " " << angvel_avr.transpose() << " " << acc_avr.transpose() << endl;
+      fout_imu << setw(10) << head->header.stamp.toSec() - first_lidar_time << " " << angvel_avr.transpose() << " " << acc_avr.transpose() <<std::endl;
     // #endif
 
     angvel_avr -= state_inout.bias_g;
@@ -493,7 +493,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, StatesGroup &state_inout
       dt = tail->header.stamp.toSec() - head->header.stamp.toSec();
     }
 
-    // cout<<"dt: "<<dt<<endl;
+    // cout<<"dt: "<<dt<< std::endl;
     
     /* covariance propagation */
     M3D acc_avr_skew;
@@ -551,8 +551,8 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, StatesGroup &state_inout
   // auto R_liD_e   = state_inout.rot_end * Lidar_R_to_IMU;
 
   #ifdef DEBUG_PRINT
-    cout<<"[ IMU Process ]: vel "<<state_inout.vel_end.transpose()<<" pos "<<state_inout.pos_end.transpose()<<" ba"<<state_inout.bias_a.transpose()<<" bg "<<state_inout.bias_g.transpose()<<endl;
-    cout<<"propagated cov: "<<state_inout.cov.diagonal().transpose()<<endl;
+    cout<<"[ IMU Process ]: vel "<<state_inout.vel_end.transpose()<<" pos "<<state_inout.pos_end.transpose()<<" ba"<<state_inout.bias_a.transpose()<<" bg "<<state_inout.bias_g.transpose()<< std::endl;
+    cout<<"propagated cov: "<<state_inout.cov.diagonal().transpose()<< std::endl;
   #endif
 
   /*** undistort each lidar point (backward propagation) ***/
@@ -563,7 +563,7 @@ void ImuProcess::UndistortPcl(const MeasureGroup &meas, StatesGroup &state_inout
     auto tail = it_kp;
     R_imu<<MAT_FROM_ARRAY(head->rot);
     acc_imu<<VEC_FROM_ARRAY(head->acc);
-    // cout<<"head imu acc: "<<acc_imu.transpose()<<endl;
+    // cout<<"head imu acc: "<<acc_imu.transpose()<< std::endl;
     vel_imu<<VEC_FROM_ARRAY(head->vel);
     pos_imu<<VEC_FROM_ARRAY(head->pos);
     angvel_avr<<VEC_FROM_ARRAY(head->gyr);
@@ -627,10 +627,10 @@ void ImuProcess::Process(const MeasureGroup &meas,  esekfom::esekf<state_ikfom, 
 
       cov_acc = cov_acc_scale;
       cov_gyr = cov_gyr_scale;
-      // cout<<"mean acc: "<<mean_acc<<" acc measures in word frame:"<<state.rot_end.transpose()*mean_acc<<endl;
+      // cout<<"mean acc: "<<mean_acc<<" acc measures in word frame:"<<state.rot_end.transpose()*mean_acc<< std::endl;
       ROS_INFO("IMU Initials: Gravity: %.4f %.4f %.4f %.4f; state.bias_g: %.4f %.4f %.4f; acc covarience: %.8f %.8f %.8f; gry covarience: %.8f %.8f %.8f",\
                imu_state.grav[0], imu_state.grav[1], imu_state.grav[2], mean_acc.norm(), cov_bias_gyr[0], cov_bias_gyr[1], cov_bias_gyr[2], cov_acc[0], cov_acc[1], cov_acc[2], cov_gyr[0], cov_gyr[1], cov_gyr[2]);
-      fout_imu.open(DEBUG_FILE_DIR("imu.txt"),ios::out);
+      fout_imu.open(DEBUG_FILE_DIR("imu.txt"),std::ios::out);
     }
 
     return;
@@ -654,7 +654,7 @@ void ImuProcess::Process(const MeasureGroup &meas,  esekfom::esekf<state_ikfom, 
 
   t3 = omp_get_wtime();
   
-  // cout<<"[ IMU Process ]: Time: "<<t3 - t1<<endl;
+  // cout<<"[ IMU Process ]: Time: "<<t3 - t1<< std::endl;
 }
 #else
 void ImuProcess::Process(const MeasureGroup &meas, StatesGroup &stat, PointCloudXYZI::Ptr cur_pcl_un_)
@@ -685,10 +685,10 @@ void ImuProcess::Process(const MeasureGroup &meas, StatesGroup &stat, PointCloud
 
       cov_acc = cov_acc_scale;
       cov_gyr = cov_gyr_scale;
-      // cout<<"mean acc: "<<mean_acc<<" acc measures in word frame:"<<state.rot_end.transpose()*mean_acc<<endl;
+      // cout<<"mean acc: "<<mean_acc<<" acc measures in word frame:"<<state.rot_end.transpose()*mean_acc<< std::endl;
       ROS_INFO("IMU Initials: Gravity: %.4f %.4f %.4f %.4f; state.bias_g: %.4f %.4f %.4f; acc covarience: %.8f %.8f %.8f; gry covarience: %.8f %.8f %.8f",\
                stat.gravity[0], stat.gravity[1], stat.gravity[2], mean_acc.norm(), cov_bias_gyr[0], cov_bias_gyr[1], cov_bias_gyr[2], cov_acc[0], cov_acc[1], cov_acc[2], cov_gyr[0], cov_gyr[1], cov_gyr[2]);
-      fout_imu.open(DEBUG_FILE_DIR("imu.txt"),ios::out);
+      fout_imu.open(DEBUG_FILE_DIR("imu.txt"),std::ios::out);
     }
 
     return;
@@ -712,6 +712,6 @@ void ImuProcess::Process(const MeasureGroup &meas, StatesGroup &stat, PointCloud
 
   t3 = omp_get_wtime();
   
-  // cout<<"[ IMU Process ]: Time: "<<t3 - t1<<endl;
+  // cout<<"[ IMU Process ]: Time: "<<t3 - t1<< std::endl;
 }
 #endif

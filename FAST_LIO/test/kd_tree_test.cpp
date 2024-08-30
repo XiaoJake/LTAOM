@@ -465,8 +465,8 @@ int main(int argc, char** argv){
         add_time += float(add_duration)/1e3;
         delete_time += float(delete_duration)/1e3;
         search_time += float(search_duration)/1e3;         
-        max_total_time = max(max_total_time, float(total_duration));
-        max_point_num = max(max_point_num,point_num_start);
+        max_total_time = std::max(max_total_time, float(total_duration));
+        max_point_num = std::max(max_point_num,point_num_start);
         // raw_cmp(target, Nearest_Num);    
         // flag = cmp_point_vec(search_result, raw_cmp_result);    
   

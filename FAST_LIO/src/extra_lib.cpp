@@ -55,9 +55,9 @@ bool GetOneLineAndSplitByComma(std::istream& fptr, std::vector<std::string> &out
 //void setKFPose(esekfom::esekf<state_ikfom, 12, input_ikfom> & kf, state_ikfom &tmp_state, const boost::shared_ptr<KD_TREE> &ikd_in, \
 //               const PointCloudXYZI::Ptr &feats_down_body, const MD(4,4) &Tcomb, const MD(4,4) &Tcomb_nooff, const int pos_id_lc,\
 //               std_msgs::Float32MultiArrayPtr &notification_msg, std_msgs::Float64MultiArrayPtr &notification_msg2, std::ostream &fout_dbg){
-//  fout_dbg<<"--------------------setKFPose------------------------------" <<endl;
+//  fout_dbg<<"--------------------setKFPose------------------------------" << std::endl;
 
-//  fout_dbg << "Tcomb_nooff: " << Tcomb_nooff << endl;
+//  fout_dbg << "Tcomb_nooff: " << Tcomb_nooff <<std::endl;
 
 //  notification_msg->data.push_back(2);
 //  notification_msg->data.push_back(RotMtoEuler(tmp_state.rot.toRotationMatrix())[0]);
@@ -73,7 +73,7 @@ bool GetOneLineAndSplitByComma(std::istream& fptr, std::vector<std::string> &out
 //  notification_msg2->data.push_back(tmp_state.pos[0]);
 //  notification_msg2->data.push_back(tmp_state.pos[1]);
 //  notification_msg2->data.push_back(tmp_state.pos[2]);
-//  fout_dbg << "kf pos " << kf.get_x().pos.transpose() << endl;
+//  fout_dbg << "kf pos " << kf.get_x().pos.transpose() <<std::endl;
 
 //  tmp_state.rot = Tcomb_nooff.block<3,3>(0,0);
 //  tmp_state.pos = Tcomb_nooff.block<3,1>(0,3);
@@ -91,7 +91,7 @@ bool GetOneLineAndSplitByComma(std::istream& fptr, std::vector<std::string> &out
 //  notification_msg2->data.push_back(tmp_state.pos[0]);
 //  notification_msg2->data.push_back(tmp_state.pos[1]);
 //  notification_msg2->data.push_back(tmp_state.pos[2]);
-//  fout_dbg << "kf pos " << kf.get_x().pos.transpose() << endl;
+//  fout_dbg << "kf pos " << kf.get_x().pos.transpose() <<std::endl;
 
 //  int cloud_size = feats_down_body->size();
 //  assert(cloud_size < 100000);
@@ -112,7 +112,7 @@ bool GetOneLineAndSplitByComma(std::istream& fptr, std::vector<std::string> &out
 //    ikd_in->Nearest_Search(point_world, 1, points_near, pointSearchSqDis);
 //    rmse += sqrt(pointSearchSqDis[0]);
 //  }
-//  fout_dbg<<endl<<"setpose rmse :"<<rmse/cloud_size<<endl;
+//  fout_dbg<< std::endl<<"setpose rmse :"<<rmse/cloud_size<< std::endl;
 //}
 
 V3D esti_center(const PointVector &point_near){
@@ -175,14 +175,14 @@ V3D geometryOrientationToRPY(const geometry_msgs::Quaternion pose_in){
 
 
 void printInfo(std::unordered_map<int, SubmapInfo> &unmap_submap_info, ostream& fout_dbg){
-  fout_dbg<< "unmap_submap_info.size(): " << unmap_submap_info.size() << endl;
+  fout_dbg<< "unmap_submap_info.size(): " << unmap_submap_info.size() <<std::endl;
   for (int i = 0; i < unmap_submap_info.size(); i++){
     auto iter = unmap_submap_info.find(i);
     if (iter != unmap_submap_info.end())
     fout_dbg<<iter->second.submap_index<<" cloud.size() :"<<iter->second.cloud_ontree.size() \
-           <<" ori_set_posed :"<<iter->second.oriPoseSet<<" cor_set_posed :"<<iter->second.corPoseSet<<endl;
+           <<" ori_set_posed :"<<iter->second.oriPoseSet<<" cor_set_posed :"<<iter->second.corPoseSet<< std::endl;
   }
-  fout_dbg<<"-------------------------------------" <<endl;
+  fout_dbg<<"-------------------------------------" << std::endl;
 }
 
 PointVector findSubmapBoundingBoxPt(const PointVector &submap_cloud){

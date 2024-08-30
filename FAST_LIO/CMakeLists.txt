@@ -97,6 +97,7 @@ target_link_libraries(extra_lib ${OpenCV_LIBS} ${OpenCV_LIBRARIES})
 
 #add_executable(fastlio_mapping src/laserMapping.cpp include/ikd-Tree/ikd_Tree.cpp include/ikd-Forest/ikd_Forest.cpp include/FOV_Checker/FOV_Checker.cpp src/preprocess.cpp)
 add_library(fastlio_mapping src/laserMapping.cpp include/ikd-Tree/ikd_Tree.cpp include/ikd-Forest/ikd_Forest.cpp include/FOV_Checker/FOV_Checker.cpp src/preprocess.cpp)
+add_dependencies(fastlio_mapping ${fastlio_mapping_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(fastlio_mapping extra_lib ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${OpenCV_LIBS})
 target_include_directories(fastlio_mapping PRIVATE ${PYTHON_INCLUDE_DIRS})
 
@@ -105,7 +106,7 @@ add_library(fastlio_plugin
 )
 target_link_libraries(fastlio_plugin fastlio_mapping ${catkin_LIBRARIES})
 if(catkin_EXPORTED_LIBRARIES)
-  add_dependencies(fastlio_plugin ${catkin_EXPORTED_LIBRARIES})
+  add_dependencies(fastlio_plugin ${fastlio_plugin_EXPORTED_TARGETS} ${catkin_EXPORTED_LIBRARIES})
 endif()
 # add_executable(kd_tree_test include/ikd-Tree/ikd_Tree.cpp src/kd_tree_test.cpp)
 # target_link_libraries(kd_tree_test ${PCL_LIBRARIES})

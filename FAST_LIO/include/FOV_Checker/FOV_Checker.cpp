@@ -36,10 +36,10 @@ void FOV_Checker::check_fov(Eigen::Vector3d cur_pose, Eigen::Vector3d axis, doub
     // fp = fopen("/home/ecstasy/catkin_ws/fov_data.csv","a");
     // fprintf(fp,"%f,%f,%f,%f,%f,%f,%0.4f,%0.1f,",cur_pose(0),cur_pose(1),cur_pose(2),axis(0),axis(1),axis(2),theta,depth);
     // fclose(fp);
-    // cout << "cur_pose: " << cur_pose.transpose() << endl;
-    // cout<< "axis: " << axis.transpose() << endl;
-    // cout<< "theta: " << theta << " depth: " << depth << endl;
-    // cout<< "env: " << env.vertex_min[0] << " " << env.vertex_max[0] << endl;
+    // cout << "cur_pose: " << cur_pose.transpose() <<std::endl;
+    // cout<< "axis: " << axis.transpose() <<std::endl;
+    // cout<< "theta: " << theta << " depth: " << depth <<std::endl;
+    // cout<< "env: " << env.vertex_min[0] << " " << env.vertex_max[0] <<std::endl;
     double axis_angle[6], min_angle, gap, plane_u_min, plane_u_max;
     Eigen::Vector3d plane_w, plane_u, plane_v, center_point, start_point, box_p;
     Eigen::Vector3d box_p_min, box_p_max;
@@ -185,7 +185,7 @@ void FOV_Checker::check_fov(Eigen::Vector3d cur_pose, Eigen::Vector3d axis, doub
 
                 k = k-1;
             }
-            u_max = max(0, max_uN - u_max - 1);
+            u_max = std::max(0, max_uN - u_max - 1);
             box_found = false;
             //printf("---- u_min -> u_max: %d->%d\n",u_min,u_max);
             for (k = u_min; k <= u_max; k++){
@@ -243,7 +243,7 @@ void FOV_Checker::check_fov(Eigen::Vector3d cur_pose, Eigen::Vector3d axis, doub
 
                 k = k-1;
             }
-            u_max = max(0, max_uN - u_max - 1);
+            u_max = std::max(0, max_uN - u_max - 1);
             //printf("---- u_min -> u_max: %d->%d\n",u_min,u_max);
             box_found = 0;
             for (k = u_min; k <= u_max; k++){

@@ -348,7 +348,7 @@ void lasermap_fov_segment()
     if (!need_move) return;
     BoxPointType New_LocalMap_Points, tmp_boxpoints;
     New_LocalMap_Points = LocalMap_Points;
-    float mov_dist = max((cube_len - 2.0 * MOV_THRESHOLD * DET_RANGE) * 0.5 * 0.9, double(DET_RANGE * (MOV_THRESHOLD -1)));
+    float mov_dist = std::max((cube_len - 2.0 * MOV_THRESHOLD * DET_RANGE) * 0.5 * 0.9, double(DET_RANGE * (MOV_THRESHOLD -1)));
     for (int i = 0; i < 3; i++)
     {
         tmp_boxpoints = LocalMap_Points;
@@ -410,7 +410,7 @@ void livox_pcl_cbk(const livox_ros_driver::CustomMsg::ConstPtr &msg)
     mtx_buffer.lock();
     scan_count ++;
     double preprocess_start_time = omp_get_wtime();
-    // cout<<"got feature"<<endl;
+    // cout<<"got feature"<< std::endl;
     if (msg->header.stamp.toSec() < last_timestamp_lidar)
     {
         ROS_ERROR("lidar loop back, clear buffer");
@@ -446,7 +446,7 @@ void imu_cbk(const sensor_msgs::Imu::ConstPtr &msg_in)
     last_timestamp_imu = timestamp;
 
     imu_buffer.push_back(msg);
-    // cout<<"got imu: "<<timestamp<<" imu size "<<imu_buffer.size()<<endl;
+    // cout<<"got imu: "<<timestamp<<" imu size "<<imu_buffer.size()<< std::endl;
     mtx_buffer.unlock();
     sig_buffer.notify_all();
 }
@@ -519,9 +519,9 @@ void msg_callbacks(){
 
 #endif
   std::fstream file_;
-  file_.open(bag_path, ios::in);
+  file_.open(bag_path, std::ios::in);
   if (!file_) {
-    fout_dbg << "File " << bag_path << " does not exit" << endl;
+    fout_dbg << "File " << bag_path << " does not exit" <<std::endl;
   }
   ROS_INFO("Start to load the rosbag %s", bag_path.c_str());
   rosbag::Bag bag;
@@ -728,7 +728,7 @@ void submap_id_cbk(const std_msgs::Int32ConstPtr &id_msg)
     submap_id = id_msg->data;
     tmp.submap_index = submap_id;
     tmp.cloud_ontree = PointSubmap;
-    fout_dbg << "Submap " << submap_id << "-th has " << PointSubmap.size() <<  " points " << endl;
+    fout_dbg << "Submap " << submap_id << "-th has " << PointSubmap.size() <<  " points " <<std::endl;
     PointVector ().swap(PointSubmap);
     auto iter = unmap_submap_info.find(tmp.submap_index);
     if (iter == unmap_submap_info.end())
@@ -795,7 +795,7 @@ void set_submap_corrected_poses(const nav_msgs::Path::ConstPtr& path_cor)
 #endif
 {
     if (!key_poses->empty()) key_poses->clear();
-    fout_dbg<< "--------------------set_submap_corrected_poses--------------------" <<endl;
+    fout_dbg<< "--------------------set_submap_corrected_poses--------------------" << std::endl;
     unmap_submap_info_bkq = unmap_submap_info;
     pcl::KdTreeFLANN<pcl::PointXYZI>::Ptr pos_kdtree_tmp\
         (new pcl::KdTreeFLANN<pcl::PointXYZI>());
@@ -849,7 +849,7 @@ void set_submap_corrected_poses(const nav_msgs::Path::ConstPtr& path_cor)
 #endif
         }
     }
-    fout_dbg<< "----------------------------------------" << endl ;
+    fout_dbg<< "----------------------------------------" <<std::endl ;
     pos_kdtree_tmp->setInputCloud(key_poses);
     pos_kdtree = pos_kdtree_tmp->makeShared();
 }
@@ -891,7 +891,7 @@ else
 
         PointCloudXYZI::Ptr correctd_cloud_submap_local(new PointCloudXYZI());
         double ptcor_start_time = omp_get_wtime();
-        fout_dbg<<"Accumulate "<<pointIndices.size() << " keyframes" <<endl;
+        fout_dbg<<"Accumulate "<<pointIndices.size() << " keyframes" << std::endl;
         for (auto &aidx : pointIndices)
         {
             int kf_index;
@@ -941,7 +941,7 @@ else
         sor.filter(*cloud_ds);
 
         fout_dbg<<"Accumulate "<<correctd_cloud_submap_local->size()<<" pts"<< ", aft downsample "  << cloud_ds->size() <<" pts"<< std::endl;
-        fout_dbg<<"Correct points takes "<<omp_get_wtime()-ptcor_start_time<<" s"<<endl;
+        fout_dbg<<"Correct points takes "<<omp_get_wtime()-ptcor_start_time<<" s"<< std::endl;
         PointToAddHistorical.push_back(cloud_ds);
 
         if (pubLaserCloudFullCor.getNumSubscribers() != 0)
@@ -990,7 +990,7 @@ void ikdtree_rebuild()
                              path_buffer.front()->poses.back().pose.position.z);
 
 #ifdef save_for_mapconsistency_eva
-        scan_pose_cor_file.open(scanpose_cor_filename, ios::out | ios::trunc);
+        scan_pose_cor_file.open(scanpose_cor_filename, std::ios::out | std::ios::trunc);
         set_submap_corrected_poses(path_buffer.front(), scan_pose_cor_file);
         scan_pose_cor_file.close();
         path_buffer.pop_front();
@@ -1093,11 +1093,11 @@ else
 //            *correctd_cloud_rebuild +=  *laserCloudWorldCorrected;
         }
         correctd_cloud_rebuild->resize(accu_pt_counter);
-        fout_dbg << "Accumulated points number: " << correctd_cloud_rebuild->size() << endl;
+        fout_dbg << "Accumulated points number: " << correctd_cloud_rebuild->size() <<std::endl;
         correctpt_counter++;
-        fout_dbg<<"Correct points takes :"<<omp_get_wtime()-ptcor_start_time<<"s"<<endl;
+        fout_dbg<<"Correct points takes :"<<omp_get_wtime()-ptcor_start_time<<"s"<< std::endl;
         correctpt_timeavg += omp_get_wtime()-ptcor_start_time;
-        fout_dbg<<"[Time] Correcting pts cost avg :"<<correctpt_timeavg/float(correctpt_counter) << "s" <<endl;
+        fout_dbg<<"[Time] Correcting pts cost avg :"<<correctpt_timeavg/float(correctpt_counter) << "s" << std::endl;
 
         if (accu_pt_counter == 0)
         {
@@ -1117,7 +1117,7 @@ else
             PointCloudXYZI::Ptr correctd_cloud_submap_tmp(new PointCloudXYZI());
             pcl::copyPointCloud(*correctd_cloud_rebuild,indices,*correctd_cloud_submap_tmp);
             correctd_cloud_rebuild = correctd_cloud_submap_tmp;
-            fout_dbg << "After downsampling, size: " << correctd_cloud_rebuild->size() << endl;
+            fout_dbg << "After downsampling, size: " << correctd_cloud_rebuild->size() <<std::endl;
         }
 
         correctd_submapsize += correctd_cloud_rebuild->size();
@@ -1127,10 +1127,10 @@ else
             ikdtree_swapptr->set_downsample_param(filter_size_map_min);
             double build_start_time = omp_get_wtime();
             ikdtree_swapptr->Build(correctd_cloud_rebuild->points);
-            fout_dbg<<"Ikdtree rebuild takes :"<<omp_get_wtime()-build_start_time<<"s"<<endl;
+            fout_dbg<<"Ikdtree rebuild takes :"<<omp_get_wtime()-build_start_time<<"s"<< std::endl;
             ikdtreebuild_timeavg += omp_get_wtime()-build_start_time;
             ikdtreebuild_counter++;
-            fout_dbg<<"[Time] Ikdtree rebuild time cost avg :"<<ikdtreebuild_timeavg/float(ikdtreebuild_counter)<<"s"<<endl;
+            fout_dbg<<"[Time] Ikdtree rebuild time cost avg :"<<ikdtreebuild_timeavg/float(ikdtreebuild_counter)<<"s"<< std::endl;
         }
 
         M3D Ricp = M3D::Identity();
@@ -1152,7 +1152,7 @@ else
 
             M3D R2, R3;
             V3D t2, t3;
-            fout_dbg<<"KF pose id at LC: "<< pos_id_lc << ", current submap_id: " << submap_id << endl;
+            fout_dbg<<"KF pose id at LC: "<< pos_id_lc << ", current submap_id: " << submap_id <<std::endl;
             if (unmap_submap_info[pos_id_lc].oriPoseSet && unmap_submap_info[pos_id_lc].corPoseSet)
             {
                 R2 = unmap_submap_info[pos_id_lc].lidar_pose_rotM;
@@ -1189,9 +1189,9 @@ else
                 ikdtree_swapptr = boost::make_shared<KD_TREE<PointType>>();
                 recover_unmap_submap_info();
                 correction_succeed = false;
-                fout_dbg<<"Ricp :"<< RotMtoEuler(Ricp).transpose() << endl;
-                fout_dbg<<"ticp :"<< ticp.transpose() << endl;
-                fout_dbg<<"------------------bad correction, skip!-----------------"<<endl;
+                fout_dbg<<"Ricp :"<< RotMtoEuler(Ricp).transpose() <<std::endl;
+                fout_dbg<<"ticp :"<< ticp.transpose() <<std::endl;
+                fout_dbg<<"------------------bad correction, skip!-----------------"<< std::endl;
             }
             else
             {
@@ -1201,9 +1201,9 @@ else
                 M3D Rvel = Ricp*R3*R2.transpose();
                 set_KF_pose(kf, tmp_state, ikdtree_swapptr, feats_down_body, guess, Ticp, guess*Toff.inverse(), \
                            Rvel, pos_id_lc, notification_msg, notification_msg2, fout_dbg);
-                fout_dbg << "After set_KF_pose, KF pose: " << kf.get_x().pos.transpose() << endl;
+                fout_dbg << "After set_KF_pose, KF pose: " << kf.get_x().pos.transpose() <<std::endl;
                 std::swap(ikdtree_ptr, ikdtree_swapptr);
-                fout_dbg << "ikdtree_ptr -> ikdtree_swapptr" << endl;
+                fout_dbg << "ikdtree_ptr -> ikdtree_swapptr" <<std::endl;
                 holding_for_ikdtreerebuild = false;
                 sig_ikdtreeptr.notify_all();
             }
@@ -1216,7 +1216,7 @@ else
             continue;
         }
 
-        fout_dbg<<"------------------one correction done-----------------"<<endl;
+        fout_dbg<<"------------------one correction done-----------------"<< std::endl;
         pubOdomCorrection.publish(notification_msg);
         pubOdomCorrection2.publish(notification_msg2);
         std_msgs::UInt64 jump_time_msg;
@@ -1243,7 +1243,7 @@ else
 
         last_update_pose = curr_update_pose;
         first_correction_set = true;
-        fout_dbg << "First correction set." << endl;
+        fout_dbg << "First correction set." <<std::endl;
         auto end = std::chrono::system_clock::now();
         std::chrono::duration<double, std::milli> elapsed_ms1 = std::chrono::duration<double,std::milli>(end - start);
         time_ikdrebuild_thread << elapsed_ms1.count() << std::endl;
@@ -1598,7 +1598,7 @@ int main(int argc, char** argv)
     p_pre->point_filter_num = 1;
     scanpose_cor_filename = save_directory + "scanposes_corrected.txt";
 #endif
-    cout<<"p_pre->lidar_type "<<p_pre->lidar_type<<endl;
+    cout<<"p_pre->lidar_type "<<p_pre->lidar_type<< std::endl;
 
     path.header.stamp    = ros::Time::now();
     path.header.frame_id ="camera_init";
@@ -1639,15 +1639,15 @@ int main(int argc, char** argv)
     string pos_log_dir = root_dir + "/Log/pos_log.txt";
     fp = fopen(pos_log_dir.c_str(),"w");
 
-    fout_pre.open(DEBUG_FILE_DIR("mat_pre.txt"),ios::out);
-    fout_out.open(DEBUG_FILE_DIR("mat_out.txt"),ios::out);
-    fout_dbg.open(save_directory + "lio_debug.txt",ios::out);
+    fout_pre.open(DEBUG_FILE_DIR("mat_pre.txt"),std::ios::out);
+    fout_out.open(DEBUG_FILE_DIR("mat_out.txt"),std::ios::out);
+    fout_dbg.open(save_directory + "lio_debug.txt",std::ios::out);
     if (fout_pre && fout_out)
-        cout << "~~~~"<<ROOT_DIR<<" file opened" << endl;
+        cout << "~~~~"<<ROOT_DIR<<" file opened" <<std::endl;
     else
-        cout << "~~~~"<<ROOT_DIR<<" doesn't exist" << endl;
+        cout << "~~~~"<<ROOT_DIR<<" doesn't exist" <<std::endl;
 
-    time_ikdrebuild_thread.open(save_directory + "times_ikdrebuild_LTAOM.txt",ios::out);
+    time_ikdrebuild_thread.open(save_directory + "times_ikdrebuild_LTAOM.txt",std::ios::out);
     time_ikdrebuild_thread.precision(std::numeric_limits<double>::max_digits10);
 
 #ifdef save_for_mapconsistency_eva
@@ -1745,7 +1745,7 @@ if (multisession_mode == 1)
             {
                 first_lidar_time = Measures.lidar_beg_time;
                 p_imu->first_lidar_time = first_lidar_time;
-                cout<<"FAST-LIO not ready"<<endl;
+                cout<<"FAST-LIO not ready"<< std::endl;
                 continue;
             }
 
@@ -1756,7 +1756,7 @@ if (multisession_mode == 1)
                    feats_undistort->points[i].y < -1000000 || feats_undistort->points[i].y > 1000000 ||
                    feats_undistort->points[i].z < -1000000 || feats_undistort->points[i].z > 1000000)
                 {
-                    cout << "[ Warn ]: point_in_body is out of reasonable range!" << endl;
+                    cout << "[ Warn ]: point_in_body is out of reasonable range!" <<std::endl;
                     is_outrange = true;
                     break;
                 }
@@ -1773,16 +1773,16 @@ if (multisession_mode == 1)
             //state_ikfom debug_state = kf.get_x();
             //euler_cur = RotMtoEuler(state_point.rot.toRotationMatrix());
             euler_cur = SO3ToEuler(state_point.rot);
-            cout<<"current lidar time "<<Measures.lidar_beg_time<<" "<<"first lidar time "<<first_lidar_time<<endl;
-            cout<<"pre-integrated states: "<<euler_cur.transpose()*57.3<<" "<<state_point.pos.transpose()<<" "<<state_point.vel.transpose()<<" "<<state_point.bg.transpose()<<" "<<state_point.ba.transpose()<<endl;
+            cout<<"current lidar time "<<Measures.lidar_beg_time<<" "<<"first lidar time "<<first_lidar_time<< std::endl;
+            cout<<"pre-integrated states: "<<euler_cur.transpose()*57.3<<" "<<state_point.pos.transpose()<<" "<<state_point.vel.transpose()<<" "<<state_point.bg.transpose()<<" "<<state_point.ba.transpose()<< std::endl;
         #endif
             /*** Segment the map in lidar FOV ***/
             lasermap_fov_segment();
-                // fout_out << "Before seg- tree size: " << fov_rec_before[0] << " " << fov_rec_before[1] << " " << fov_rec_before[2] << endl;
-                // fout_out << "FoV seg - size : " << fov_size[0] << " " << fov_size[1] << " " << fov_size[2] << endl;
-                // fout_out << "After seg - tree size: " << fov_rec_after[0] << " " << fov_rec_after[1] << " " << fov_rec_after[2] << endl;
-                // cout << "Max Queue Size is : " << ikdtree.max_queue_size << endl;
-                // fout_out << "Point Cache Size: " << points_cache_size << endl;
+                // fout_out << "Before seg- tree size: " << fov_rec_before[0] << " " << fov_rec_before[1] << " " << fov_rec_before[2] <<std::endl;
+                // fout_out << "FoV seg - size : " << fov_size[0] << " " << fov_size[1] << " " << fov_size[2] <<std::endl;
+                // fout_out << "After seg - tree size: " << fov_rec_after[0] << " " << fov_rec_after[1] << " " << fov_rec_after[2] <<std::endl;
+                // cout << "Max Queue Size is : " << ikdtree.max_queue_size <<std::endl;
+                // fout_out << "Point Cache Size: " << points_cache_size <<std::endl;
             /*** downsample the feature points in a scan ***/
 
             downSizeFilterSurf.setInputCloud(feats_undistort);
@@ -1811,18 +1811,18 @@ if (multisession_mode == 1)
             int featsFromMapNum = ikdtree_ptr->validnum();
             kdtree_size_st = ikdtree_ptr->size();
 
-            // cout<<"[ mapping ]: Raw feature num: "<<feats_undistort->points.size()<<" downsamp num "<<feats_down_size<<" Map num: "<<featsFromMapNum<<endl;
+            // cout<<"[ mapping ]: Raw feature num: "<<feats_undistort->points.size()<<" downsamp num "<<feats_down_size<<" Map num: "<<featsFromMapNum<< std::endl;
 
             /*** ICP and iterated Kalman filter update ***/
             normvec->resize(feats_down_size);
             feats_down_world->resize(feats_down_size);
             // VD(DIM_STATE) P_diag = state.cov.diagonal();
-            // cout<<"P_pre: "<<P_diag.transpose()<<endl;
+            // cout<<"P_pre: "<<P_diag.transpose()<< std::endl;
 
             //state_ikfom fout_state = kf.get_x();
             V3D ext_euler = SO3ToEuler(state_point.offset_R_L_I);
             fout_pre<<setw(20)<<Measures.lidar_beg_time - first_lidar_time<<" "<<euler_cur.transpose()<<" "<< state_point.pos.transpose()<<" "<<ext_euler.transpose() << " "<<state_point.offset_T_L_I.transpose()<< " " << state_point.vel.transpose() \
-            <<" "<<state_point.bg.transpose()<<" "<<state_point.ba.transpose()<<" "<<state_point.grav<< endl;
+            <<" "<<state_point.bg.transpose()<<" "<<state_point.ba.transpose()<<" "<<state_point.grav<<std::endl;
 
             pointSearchInd_surf.resize(feats_down_size);
             Nearest_Points.resize(feats_down_size);
@@ -1833,7 +1833,7 @@ if (multisession_mode == 1)
 
             /*** iterated state estimation ***/
             #ifdef MP_EN
-            // cout<<"Using multi-processor, used core number: "<<MP_PROC_NUM<<endl;
+            // cout<<"Using multi-processor, used core number: "<<MP_PROC_NUM<< std::endl;
             #endif
             double t_update_start = omp_get_wtime();
             // V3D search_target_sum(0,0,0);
@@ -1851,7 +1851,7 @@ if (multisession_mode == 1)
             //euler_cur = RotMtoEuler(state_point.rot.toRotationMatrix());
             euler_cur = SO3ToEuler(state_point.rot);
             pos_lid = state_point.pos + state_point.rot * state_point.offset_T_L_I;
-            // cout<<"position: "<<pos_lid.transpose()<<endl;
+            // cout<<"position: "<<pos_lid.transpose()<< std::endl;
             geoQuat.x = state_point.rot.coeffs()[0];
             geoQuat.y = state_point.rot.coeffs()[1];
             geoQuat.z = state_point.rot.coeffs()[2];
@@ -1881,11 +1881,11 @@ if (multisession_mode == 1)
 
             /*** add the feature points to map kdtree ***/
             t3 = omp_get_wtime();
-            // fout_out << "Before - tree size: " << ikdtree.validnum() << endl;
+            // fout_out << "Before - tree size: " << ikdtree.validnum() <<std::endl;
 
             map_incremental();
 
-            // fout_out << "After - tree size: " << ikdtree.validnum() << endl;
+            // fout_out << "After - tree size: " << ikdtree.validnum() <<std::endl;
             t5 = omp_get_wtime();
             kdtree_size_end = ikdtree_ptr->size();
 
@@ -1927,7 +1927,7 @@ if (multisession_mode == 1)
             printf("[ mapping ]: time: IMU + Map + Input Downsample: %0.6f ave match: %0.6f ave solve: %0.6f  ave ICP: %0.6f  map incre: %0.6f ave total: %0.6f icp: %0.6f construct H: %0.6f \n",t1-t0,aver_time_match,aver_time_solve,t3-t1,t5-t3,aver_time_consu,aver_time_icp, aver_time_const_H_time);
             ext_euler = SO3ToEuler(state_point.offset_R_L_I);
             fout_out << setw(20) << Measures.lidar_beg_time - first_lidar_time << " " << euler_cur.transpose() << " " << state_point.pos.transpose()<< " " << ext_euler.transpose() << " "<<state_point.offset_T_L_I.transpose()<<" "<< state_point.vel.transpose() \
-            <<" "<<state_point.bg.transpose()<<" "<<state_point.ba.transpose()<<" "<<state_point.grav<<" "<<feats_undistort->points.size()<<endl;
+            <<" "<<state_point.bg.transpose()<<" "<<state_point.ba.transpose()<<" "<<state_point.grav<<" "<<feats_undistort->points.size()<< std::endl;
             dump_lio_state_to_log(fp);
             if (do_posecorrection)  // In case setKF not success
             {
@@ -1968,7 +1968,7 @@ if (multisession_mode == 1)
 bool refine_with_pt2pt_icp(const PointCloudXYZI::Ptr &feats_down_body, const float rmse_thr, const int iteration_thr, const boost::shared_ptr<KD_TREE<PointType>> &ikd_in, \
                         M3D &Ricp, V3D &ticp,  const M3D &Rguess, const V3D &tguess, const int pos_id_lc, std::ostream &fout_dbg)
 {
-    fout_dbg<<pos_id_lc<<"--------------------refine_with_pt2pt_icp--------------------" <<endl;
+    fout_dbg<<pos_id_lc<<"--------------------refine_with_pt2pt_icp--------------------" << std::endl;
 
     // Align pointclouds
     double match_start_tmp = omp_get_wtime();
@@ -2024,7 +2024,7 @@ bool refine_with_pt2pt_icp(const PointCloudXYZI::Ptr &feats_down_body, const flo
             match_time_avg += elapsed_ms;
             match_count++;
             fout_dbg << elapsed_ms << "ms" << "______all done______" << " ";
-            fout_dbg << "[Time] avg loop correction re-registration : " << (match_time_avg/float(match_count))/1000 << " s" << endl;
+            fout_dbg << "[Time] avg loop correction re-registration : " << (match_time_avg/float(match_count))/1000 << " s" <<std::endl;
             return true;
         }
 
@@ -2049,14 +2049,14 @@ bool refine_with_pt2pt_icp(const PointCloudXYZI::Ptr &feats_down_body, const flo
         fout_dbg <<  iteration << " iters icp result euler: " << RotMtoEuler(Ricp).transpose();
         fout_dbg << " tran: " << ticp.transpose() << " ";
         elapsed_ms = 1000*(omp_get_wtime() - match_start_tmp);
-        fout_dbg<< elapsed_ms << "ms" << "______one iteration done______ " << endl;
+        fout_dbg<< elapsed_ms << "ms" << "______one iteration done______ " <<std::endl;
     }
     elapsed_ms = 1000*(omp_get_wtime() - match_start_tmp);
-    fout_dbg  << elapsed_ms << "ms, " << "______reach max iterations______" <<endl;
+    fout_dbg  << elapsed_ms << "ms, " << "______reach max iterations______" << std::endl;
 
     match_time_avg += elapsed_ms;
     match_count++;
-    fout_dbg << "[Time] avg loop correction re-registration : " << (match_time_avg/float(match_count))/1000 << " s" << endl;
+    fout_dbg << "[Time] avg loop correction re-registration : " << (match_time_avg/float(match_count))/1000 << " s" <<std::endl;
 
     if (rmse < rmse_thr)
         return true;
@@ -2067,7 +2067,7 @@ bool refine_with_pt2pt_icp(const PointCloudXYZI::Ptr &feats_down_body, const flo
 
 bool refine_with_pt2_plane_icp(const PointCloudXYZI::Ptr &feats_down_body, const float rmse_thr, const int iteration_thr, const boost::shared_ptr<KD_TREE<PointType>> &ikd_in, \
                            M3D &Ricp, V3D &ticp, const M3D &Rguess, const V3D &tguess, const int pos_id_lc, std::ostream &fout_dbg){
-  fout_dbg<<pos_id_lc<<"--------------------refine_with_pt2_plane_icp------" <<endl;
+  fout_dbg<<pos_id_lc<<"--------------------refine_with_pt2_plane_icp------" << std::endl;
 
   M3D Rfull = M3D::Identity();
   V3D tfull(0,0,0);
@@ -2160,11 +2160,11 @@ bool refine_with_pt2_plane_icp(const PointCloudXYZI::Ptr &feats_down_body, const
     rmse /= cloud_size;
     if (rmse < rmse_thr){
       elapsed_ms = 1000*(omp_get_wtime() - match_start_tmp);
-      fout_dbg  << elapsed_ms << "ms" << "______all done______" <<endl;
+      fout_dbg  << elapsed_ms << "ms" << "______all done______" << std::endl;
       return true;
     }
     elapsed_ms = 1000*(omp_get_wtime() - match_start_tmp);
-    fout_dbg  << elapsed_ms << "ms" << " done A b construction" <<endl;
+    fout_dbg  << elapsed_ms << "ms" << " done A b construction" << std::endl;
 //    fout_dbg<<"effect_num: " << effect_num << std::endl;
     Eigen::MatrixXd A(effect_num,6);
     Eigen::MatrixXd b(effect_num,1);
@@ -2194,11 +2194,11 @@ bool refine_with_pt2_plane_icp(const PointCloudXYZI::Ptr &feats_down_body, const
                                               point_tar.normal_z)));
 
           effect_num ++;
-//          fout_dbg<< "effect_num:" <<effect_num <<endl;
+//          fout_dbg<< "effect_num:" <<effect_num << std::endl;
         }
     }
     elapsed_ms = 1000*(omp_get_wtime() - match_start_tmp);
-    fout_dbg  << elapsed_ms << "ms" << " done point paris accumulation" <<endl;
+    fout_dbg  << elapsed_ms << "ms" << " done point paris accumulation" << std::endl;
 
 //    fout_dbg< "b avg: " << sum(b)/float(effect_num) << std::endl;
 
@@ -2234,14 +2234,14 @@ bool refine_with_pt2_plane_icp(const PointCloudXYZI::Ptr &feats_down_body, const
     Rfull = Rdelta*Rfull;
     tfull = Rdelta*tfull + tdelta;
 
-    fout_dbg << "Rfull: " << RotMtoEuler(Rfull).transpose() << endl;
-    fout_dbg << "tfull: " << tfull.transpose() << endl;
-    fout_dbg << "rmse: " << rmse << endl;
+    fout_dbg << "Rfull: " << RotMtoEuler(Rfull).transpose() <<std::endl;
+    fout_dbg << "tfull: " << tfull.transpose() <<std::endl;
+    fout_dbg << "rmse: " << rmse <<std::endl;
     elapsed_ms = 1000*(omp_get_wtime() - match_start_tmp);
-    fout_dbg  << elapsed_ms << "ms" << "______one iteration done______" <<endl;
+    fout_dbg  << elapsed_ms << "ms" << "______one iteration done______" << std::endl;
   }
   elapsed_ms = 1000*(omp_get_wtime() - match_start_tmp);
-  fout_dbg  << elapsed_ms << "ms" << "______all done______" <<endl;
+  fout_dbg  << elapsed_ms << "ms" << "______all done______" << std::endl;
 
   if (rmse < rmse_thr)
     return true;
@@ -2253,7 +2253,7 @@ void set_KF_pose(esekfom::esekf<state_ikfom, 12, input_ikfom> & kf, state_ikfom 
                const PointCloudXYZI::Ptr &feats_down_body, const MD(4,4) &Tcomb, const MD(4,4) &Ticp, const MD(4,4) &Tcomb_nooff, const M3D &Rvel, const int pos_id_lc,\
                std_msgs::Float32MultiArrayPtr &notification_msg, std_msgs::Float64MultiArrayPtr &notification_msg2, std::ostream &fout_dbg)
 {
-    fout_dbg<<"--------------------set_KF_pos--------------------" <<endl;
+    fout_dbg<<"--------------------set_KF_pos--------------------" << std::endl;
     notification_msg->data.push_back(2);
     notification_msg->data.push_back(RotMtoEuler(tmp_state.rot.toRotationMatrix())[0]);
     notification_msg->data.push_back(RotMtoEuler(tmp_state.rot.toRotationMatrix())[1]);
@@ -2268,7 +2268,7 @@ void set_KF_pose(esekfom::esekf<state_ikfom, 12, input_ikfom> & kf, state_ikfom 
     notification_msg2->data.push_back(tmp_state.pos[0]);
     notification_msg2->data.push_back(tmp_state.pos[1]);
     notification_msg2->data.push_back(tmp_state.pos[2]);
-    fout_dbg << "KF pos before correction: " << kf.get_x().pos.transpose() << endl;
+    fout_dbg << "KF pos before correction: " << kf.get_x().pos.transpose() <<std::endl;
 
     tmp_state.rot = (Ticp*Tcomb_nooff).block<3,3>(0,0);
     tmp_state.pos = (Ticp*Tcomb_nooff).block<3,1>(0,3);
@@ -2294,7 +2294,7 @@ if (multisession_mode == 1)
     notification_msg2->data.push_back(tmp_state.pos[0]);
     notification_msg2->data.push_back(tmp_state.pos[1]);
     notification_msg2->data.push_back(tmp_state.pos[2]);
-    fout_dbg << "KF pos after correction: " << kf.get_x().pos.transpose() << endl;
+    fout_dbg << "KF pos after correction: " << kf.get_x().pos.transpose() <<std::endl;
 
 //    int cloud_size = feats_down_body->size();
 ////    assert(cloud_size < 100000);
@@ -2315,6 +2315,6 @@ if (multisession_mode == 1)
 //        ikd_in->Nearest_Search(point_world, 1, points_near, pointSearchSqDis);
 //        rmse += sqrt(pointSearchSqDis[0]);
 //    }
-//    fout_dbg<<endl<<"setpose rmse :"<<rmse/cloud_size<<endl;
+//    fout_dbg<< std::endl<<"setpose rmse :"<<rmse/cloud_size<< std::endl;
 }
 
