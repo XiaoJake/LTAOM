@@ -645,7 +645,7 @@ int mainLCFunction()
   ros::NodeHandle nh;
   std::string config_file  = "config.yaml";
   if (nh.getParam("/lcd_config_path", config_file))
-    std::cout << "Succeed in geting loop detection config file!" << std::endl;
+    std::cout << "Succeed in geting loop detection config file!\n" << config_file<< std::endl;
   else
   {
     std::cerr << "Failed to get config file!" << std::endl;
