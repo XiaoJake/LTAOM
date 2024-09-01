@@ -12,7 +12,7 @@ To Evaluate LTA-OM:
 
 5. Open evaluate_map.sh. Specify bag_file and pose_file with the paths found at step 4.
 
-6. $ source ~/ws_LTAOM/devel/setup.bash
+6. $ source ~/ws_LTAOM/devel/setup.sh
    $ roslaunch fast_lio evaluate_map.sh
 
 ps:

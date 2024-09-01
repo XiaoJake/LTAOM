@@ -39,9 +39,10 @@ catkin_package(
  CATKIN_DEPENDS roscpp rospy std_msgs
 )
 
-set(LIB_OPENCV_IMGPROC_DIR /home/infore/source_install/oneTBB)
+set(LIB_OPENCV_IMGPROC_DIR $ENV{HOME}/source_install/oneTBB)
 add_library(libtbb SHARED IMPORTED)
-set_target_properties(libtbb PROPERTIES IMPORTED_LOCATION ${LIB_OPENCV_IMGPROC_DIR}/build/linux_intel64_gcc_cc9.4.0_libc2.27_kernel5.4.0_release/libtbb.so.2)
+#set_target_properties(libtbb PROPERTIES IMPORTED_LOCATION ${LIB_OPENCV_IMGPROC_DIR}/build/linux_intel64_gcc_cc9.4.0_libc2.27_kernel5.4.0_release/libtbb.so.2)
+set_target_properties(libtbb PROPERTIES IMPORTED_LOCATION ${LIB_OPENCV_IMGPROC_DIR}/build/linux_aarch64_gcc_cc9.4.0_libc2.31_kernel5.15.0_release/libtbb.so.2)
 
 include_directories(
   include

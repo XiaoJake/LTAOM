@@ -42,7 +42,7 @@ Clone the repository and catkin_make:
     git clone https://github.com/XW-HKU/fast_lio.git
     cd ..
     catkin_make
-    source devel/setup.bash
+    source devel/setup.sh
 ```
 
 *Remarks:*

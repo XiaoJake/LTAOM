@@ -46,7 +46,7 @@ cd ~/ws_LTAOM/src/
 git clone https://github.com/hku-mars/LTAOM.git
 cd ../
 catkin_make
-source ~/catkin_ws/devel/setup.bash
+source ~/catkin_ws/devel/setup.sh
 ```
 
 ## 4. Run our examples
