@@ -38,7 +38,9 @@ Our gcc/g++ version is gcc/g++ -7.
 Our tbb: Threading Building Blocks 2019 Update 9
 
 Download it from github and build it in a folder. Link it using hard directory in STD Cmakelist.txt.
-
+```
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/source_install/oneTBB/build/linux_intel64_gcc_cc9.4.0_libc2.27_kernel5.4.0_release
+```
 ## 3. Build
 Clone this repository and catkin_make:
 ```
