@@ -95,7 +95,7 @@ void Preprocess::avia_handler(const livox_ros_driver2::CustomMsg::ConstPtr &msg)
   {
     for(uint i=1; i<plsize; i++)
     {
-      if((msg->points[i].line < N_SCANS) && ((msg->points[i].tag & 0x30) == 0x10))
+      if((msg->points[i].line < N_SCANS) && ((msg->points[i].tag & 0x30) == 0x10 || (msg->points[i].tag & 0x30) == 0x00))
       {
         pl_full[i].x = msg->points[i].x;
         pl_full[i].y = msg->points[i].y;
@@ -144,9 +144,8 @@ void Preprocess::avia_handler(const livox_ros_driver2::CustomMsg::ConstPtr &msg)
   {
     for(uint i=1; i<plsize; i++)
     {
-      if((msg->points[i].line < N_SCANS) && ((msg->points[i].tag & 0x30) == 0x10)
+      if((msg->points[i].line < N_SCANS) && ((msg->points[i].tag & 0x30) == 0x10 || (msg->points[i].tag & 0x30) == 0x00))
          //|| (msg->points[i].tag & 0x30) == 0x00 //mid360
-         )
       {
         valid_num ++;
         if (valid_num % point_filter_num == 0)
