@@ -41,8 +41,18 @@ catkin_package(
 
 set(LIB_OPENCV_IMGPROC_DIR $ENV{HOME}/source_install/oneTBB)
 add_library(libtbb SHARED IMPORTED)
-#set_target_properties(libtbb PROPERTIES IMPORTED_LOCATION ${LIB_OPENCV_IMGPROC_DIR}/build/linux_intel64_gcc_cc9.4.0_libc2.27_kernel5.4.0_release/libtbb.so.2)
-set_target_properties(libtbb PROPERTIES IMPORTED_LOCATION ${LIB_OPENCV_IMGPROC_DIR}/build/linux_aarch64_gcc_cc9.4.0_libc2.31_kernel5.15.0_release/libtbb.so.2)
+# 定义变量以存储 libtbb.so 的路径
+set(LIBTBB_X86_PATH "${LIB_OPENCV_IMGPROC_DIR}/build/linux_intel64_gcc_cc9.4.0_libc2.27_kernel5.4.0_release/libtbb.so.2")
+set(LIBTBB_AARCH_PATH "${LIB_OPENCV_IMGPROC_DIR}/build/linux_aarch64_gcc_cc9.4.0_libc2.31_kernel5.15.0_release/libtbb.so.2")
+
+# 检查系统架构
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|i686|i386|amd64")
+  # 系统是 x86 架构
+  set_target_properties(libtbb PROPERTIES IMPORTED_LOCATION ${LIBTBB_X86_PATH})
+else()
+  # 系统是其他架构（例如 aarch64）
+  set_target_properties(libtbb PROPERTIES IMPORTED_LOCATION ${LIBTBB_AARCH_PATH})
+endif()
 
 include_directories(
   include

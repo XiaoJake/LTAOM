@@ -1780,19 +1780,19 @@ if (multisession_mode == 1)
         rate.sleep();
         ros::spinOnce();
         bool save_one_time = false;
-if (multisession_mode == 2)
-{
-        nh.getParam("/save_prior_info", save_one_time); // you can do [$rosparam set /save_prior_info true] on terminal to
-                                                        // manually save prior info for future session
-        if(save_one_time)
+        if (multisession_mode == 2)
         {
-            nh.setParam("/save_prior_info", false);
-            save_one_time = false;
-            mtx_keyf_read_.lock();
-            savePrior();
-            mtx_keyf_read_.unlock();
+          nh.getParam("/save_prior_info", save_one_time); // you can do [$rosparam set /save_prior_info true] on terminal to
+                                                          // manually save prior info for future session
+          if(save_one_time)
+          {
+              nh.setParam("/save_prior_info", false);
+              save_one_time = false;
+              mtx_keyf_read_.lock();
+              savePrior();
+              mtx_keyf_read_.unlock();
+          }
         }
-}
         nh.getParam("/save_map", save_one_time);    // you can do [$rosparam set /save_map true] on terminal to manually save map
         if(save_one_time)
         {

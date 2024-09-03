@@ -1,5 +1,5 @@
 <launch>
-        <param name="multisession_mode" type="int" value="0"/>
+        <param name="multisession_mode" type="int" value="2"/>
         <param name="SaveDir" type="string" value="$(env HOME)/ltaom_ws/logs/"/>
 
         <node pkg="nodelet" type="nodelet" args="manager" name="sample_nodelet_manager" output="screen">
