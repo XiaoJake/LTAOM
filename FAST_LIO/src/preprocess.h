@@ -56,10 +56,10 @@ namespace ouster_ros {
       PCL_ADD_POINT4D;
       float intensity;
       uint32_t t;
-      uint16_t reflectivity;
-      uint8_t  ring;
-      uint16_t ambient;
-      uint32_t range;
+      // uint16_t reflectivity; // mulran dataset fomat
+      int32_t  ring;
+      // uint16_t ambient;
+      // uint32_t range;
       EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   };
 }  // namespace ouster_ros
@@ -72,10 +72,10 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(ouster_ros::Point,
     (float, intensity, intensity)
     // use std::uint32_t to avoid conflicting with pcl::uint32_t
     (std::uint32_t, t, t)
-    (std::uint16_t, reflectivity, reflectivity)
-    (std::uint8_t, ring, ring)
-    (std::uint16_t, ambient, ambient)
-    (std::uint32_t, range, range)
+    // (std::uint16_t, reflectivity, reflectivity) // mulran dataset fomat
+    (std::int32_t, ring, ring)
+    // (std::uint16_t, ambient, ambient)
+    // (std::uint32_t, range, range)
 )
 
 namespace pandar128_ros {
