@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#source ${HOME}/code/livox_ws/devel/setup.bash
+#source ${HOME}/code/ltaom_ws/devel/setup.bash
+#export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/source_install/oneTBB/build/linux_intel64_gcc_cc9.4.0_libc2.27_kernel5.4.0_release
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/source_install/oneTBB/build/linux_aarch64_gcc_cc9.4.0_libc2.31_kernel5.15.0_release
+
